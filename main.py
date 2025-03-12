@@ -1,11 +1,10 @@
 
-import pygame
-from pygame.mixer import Sound, get_init, pre_init
-
 import time
-
 from array import array
 from time import sleep
+import pygame
+
+from pygame.mixer import Sound, get_init, pre_init
 
 class Note(Sound):
 
@@ -30,6 +29,10 @@ RED = (255, 0, 0)
 GREEN = (0, 255, 0)
 BLUE = (0, 0, 255)
 GRAY = (200, 200, 200)
+YELLOW = (255, 255, 0)
+ORANGE = (255,140,0)
+
+title = "Amateur Radio Communications"
 
 CODE = {"A": ".-",     "B": "-...",   "C": "-.-.", 
         "D": "-..",    "E": ".",      "F": "..-.",
@@ -48,15 +51,17 @@ CODE = {"A": ".-",     "B": "-...",   "C": "-.-.",
         }
 
 pygame.init()
-screen = pygame.display.set_mode((1920, 1080))
+
+infoObject = pygame.display.Info()
+screen = pygame.display.set_mode((infoObject.current_w, infoObject.current_h))
 clock = pygame.time.Clock()
 running = True
 
 input = ""
 morse = ""
+code = ""
 
 pre_init(44100, -16, 1, 1024)
-
 
 while running:
 
@@ -88,11 +93,23 @@ while running:
     morse = "".join(morse)
     screen.fill("black")
     font = pygame.font.SysFont(None, 84)
-    
-    input_img = font.render(input, True, GREEN)
-    morse_img = font.render(morse, True, GREEN)
-    screen.blit(input_img, (20, 20))
-    screen.blit(morse_img, (20, 100))
+    center = screen.get_rect().center
+    title_img = font.render(title, True, ORANGE)
+
+
+    input_img = font.render(input, True, YELLOW)
+    morse_img = font.render(code, True, YELLOW)
+
+    last_char_img = font.render(input[-1] if len(input) else "", True, YELLOW)
+    last_morse_img = font.render(code, True, YELLOW)
+
+    screen.blit(title_img, title_img.get_rect(center = (center[0],center[1]-350)))
+
+    screen.blit(last_morse_img, last_morse_img.get_rect(center = (center[0],center[1]-250)))
+    screen.blit(last_char_img, last_char_img.get_rect(center = (center[0],center[1]-150)))
+
+    screen.blit(input_img, input_img.get_rect(center = (center[0],center[1]+150)))
+    screen.blit(morse_img, morse_img.get_rect(center = (center[0],center[1]+250)))
 
     dt = clock.tick(30) / 1000
 
