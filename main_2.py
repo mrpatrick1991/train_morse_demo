@@ -75,6 +75,7 @@ timer = 0
 morse = []
 input = ""
 symbol = ""
+
 send_flag = False
 
 def udp_send(message):
@@ -90,8 +91,7 @@ def udp_receive():
     global morse
     global input
     global symbol
-    global input
-    
+
     sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM, socket.IPPROTO_UDP)
     sock.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
     sock.bind(("", PORT))
@@ -109,7 +109,6 @@ def udp_receive():
             morse = message["morse"]
             input = message["input"]
             symbol = message["symbol"]
-            input = message["input"]
 
         except json.JSONDecodeError:
             pass
@@ -132,7 +131,6 @@ while running:
                 input += event.unicode.upper()
                 symbol = code[event.unicode.upper()]
                 morse.append(symbol)
-                send_flag = True
                 for char in symbol:
                     if char == ".":
                         Note(tone_freq_hz).play(-1,maxtime=int(dit_time_sec*1000))
@@ -153,6 +151,9 @@ while running:
                 symbol = ""
             if (input == ""):
                 symbol = ""
+            
+            send_flag = True
+
        
     title_img = font.render(title, True, orange)
     input_img = font.render(input, True, yellow)
@@ -169,6 +170,6 @@ while running:
 
     if (send_flag):
         send_flag = False
-        udp_send({"morse":morse, "input": input, "symbol": symbol, "input": input})
+        udp_send({"morse":morse, "input": input, "symbol": symbol})
 
     
