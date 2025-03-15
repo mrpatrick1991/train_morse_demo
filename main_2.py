@@ -126,7 +126,15 @@ while running:
     center = screen.get_rect().center
 
     for event in pygame.event.get():
+
+        if event.type == pygame.QUIT:  # Handles window close
+            running = False
+
         if event.type == pygame.KEYDOWN:
+
+            if event.key == pygame.K_ESCAPE:  # Exit when ESC is pressed
+                running = False
+
             if event.unicode.isalpha() or event.unicode.isnumeric():
                 input += event.unicode.upper()
                 symbol = code[event.unicode.upper()]
