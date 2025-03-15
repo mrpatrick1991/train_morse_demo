@@ -106,7 +106,7 @@ def udp_receive():
         try:
             message = json.loads(data.decode())  # Deserialize JSON to dict
             print(f"Received from {addr}: {message}")
-            morse = message["morse"]
+            morse[:] = message["morse"]  # Update in place
             input = message["input"]
             symbol = message["symbol"]
 
@@ -144,11 +144,14 @@ while running:
                 input += " "
                 symbol = ""
             elif event.key == pygame.K_BACKSPACE:
-                input = input[:-1]
-                morse = morse[:-1]
+                if input:
+                    input = input[:-1]  # Remove last character
+                if morse:
+                    morse.pop()  # Remove last Morse code entry
             elif event.key == pygame.K_RETURN:
                 input = ""
                 symbol = ""
+                morse = []
             if (input == ""):
                 symbol = ""
             
