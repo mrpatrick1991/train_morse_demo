@@ -87,6 +87,11 @@ def udp_send(message):
 
 def udp_receive():
     """Receives dictionary messages over UDP multicast."""
+    global morse
+    global input
+    global symbol
+    global input
+    
     sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM, socket.IPPROTO_UDP)
     sock.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
     sock.bind(("", PORT))
