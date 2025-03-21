@@ -164,6 +164,7 @@ while running:
                 morse.append(symbol)
                 print("keyed symbol is: ", input)
                 keyer_dit_dah = []
+                send_flag = True
             except KeyError:
                 print("no valid morse symbol for: ", str("".join(keyer_dit_dah)), " ignoring.")
                 keyer_dit_dah = []
