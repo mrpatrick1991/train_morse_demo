@@ -13,10 +13,13 @@ title = "Amateur Radio Communications"
 MULTICAST_GROUP = "224.1.1.1"
 PORT = 5007
 
-tone_freq_hz = 600
+tone_freq_hz = 500
 dit_time_sec = .05
 dah_time_sec = .1
 pause_time_sec = .05
+key_fudge_factor = 1.5      # make the manual keydown less sensitive, i.e. symbols are expected to be longer.
+key_guard_period_sec = 0.25 # assume that the character is done being keyed if there is no keyer activity in this many seconds. 
+key_min_time_sec = 0.01     # if key pressed for less than this, don't record it as a dit (or a dah). 
 
 black = (0, 0, 0)
 red = (255, 0, 0)
@@ -73,10 +76,13 @@ pygame.mixer.pre_init(44100, -16, 1, 1024)
 
 timer = 0
 morse = []
+keyer_dit_dah = []
 input = ""
 symbol = ""
 
 send_flag = False
+mouse_down_time = 0
+mouse_down = False
 
 def udp_send(message):
     """Sends dictionary messages over UDP multicast."""
@@ -130,12 +136,46 @@ while running:
         if event.type == pygame.QUIT:  # Handles window close
             running = False
 
+        if event.type == pygame.MOUSEBUTTONDOWN and not mouse_down:
+            mouse_down = True
+            mouse_down_time = timer
+            Note(tone_freq_hz).play(-1,maxtime=int(10*1000))
+
+        if event.type == pygame.MOUSEBUTTONUP and mouse_down:
+            mouse_down = False
+            mouse_down_sec = timer - mouse_down_time
+            pygame.mixer.stop()
+            print("mouse clicked for: ", str(mouse_down_sec))
+
+            if (mouse_down_sec <= dit_time_sec*key_fudge_factor and mouse_down_sec > key_min_time_sec):
+                print("DIT ")
+                keyer_dit_dah.append(".")
+
+            elif (mouse_down_sec >= dit_time_sec*key_fudge_factor):
+                print("DAH ")
+                keyer_dit_dah.append("-")
+                
+
+        if timer - mouse_down_time >= key_guard_period_sec and len(keyer_dit_dah):
+            print("guard period timeout")
+            try:
+                input += code_reverse["".join(keyer_dit_dah)]
+                symbol = "".join(keyer_dit_dah)
+                morse.append(symbol)
+                print("keyed symbol is: ", input)
+                keyer_dit_dah = []
+            except KeyError:
+                print("no valid morse symbol for: ", str("".join(keyer_dit_dah)), " ignoring.")
+                keyer_dit_dah = []
+            print("".join(keyer_dit_dah))
+            keyer_dit_dah = []
+
         if event.type == pygame.KEYDOWN:
 
             if event.key == pygame.K_ESCAPE:  # Exit when ESC is pressed
                 running = False
 
-            if event.unicode.isalpha() or event.unicode.isnumeric():
+            if (event.unicode.isalpha() or event.unicode.isnumeric()) and not mouse_down:
                 input += event.unicode.upper()
                 symbol = code[event.unicode.upper()]
                 morse.append(symbol)
