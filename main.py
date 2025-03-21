@@ -18,7 +18,7 @@ dit_time_sec = .05
 dah_time_sec = .1
 pause_time_sec = .05
 key_fudge_factor = 1.5      # make the manual keydown less sensitive, i.e. symbols are expected to be longer.
-key_guard_period_sec = 0.25 # assume that the character is done being keyed if there is no keyer activity in this many seconds. 
+key_guard_period_sec = 0.40 # assume that the character is done being keyed if there is no keyer activity in this many seconds. 
 key_min_time_sec = 0.01     # if key pressed for less than this, don't record it as a dit (or a dah). 
 
 black = (0, 0, 0)
@@ -156,8 +156,14 @@ while running:
                 keyer_dit_dah.append("-")
                 
 
-        if timer - mouse_down_time >= key_guard_period_sec and len(keyer_dit_dah):
+        if timer - mouse_down_time >= key_guard_period_sec and len(keyer_dit_dah) and not mouse_down:
             print("guard period timeout")
+
+            if (len(keyer_dit_dah) > 5):
+                keyer_dit_dah = []
+                print("".join(keyer_dit_dah))
+                print("morse symbol is too long (>5 dits or dahs), ignoring.")
+
             try:
                 input += code_reverse["".join(keyer_dit_dah)]
                 symbol = "".join(keyer_dit_dah)
