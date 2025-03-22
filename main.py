@@ -70,6 +70,7 @@ code_reverse = {v: k for k, v in code.items()}
 
 pygame.init()
 
+GPIO.setwarnings(False) # Ignore warning for now
 GPIO.setmode(GPIO.BOARD) # Use physical pin numbering
 GPIO.setup(11, GPIO.IN, pull_up_down=GPIO.PUD_DOWN)
 
@@ -136,9 +137,9 @@ while running:
     font = pygame.font.SysFont(None, 84)
     center = screen.get_rect().center
 
-    if GPIO.input(10) == GPIO.HIGH:
+    if GPIO.input(11) == GPIO.HIGH:
         print("high")
-
+    
 
     for event in pygame.event.get():
 
