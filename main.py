@@ -143,7 +143,7 @@ while running:
         mouse_down_time = timer
         Note(tone_freq_hz).play(-1,maxtime=int(10*1000))
             
-    if (GPIO.input(keyer_pin) == GPIO.LOW):        
+    if (GPIO.input(keyer_pin) == GPIO.LOW and mouse_down):        
         mouse_down = False
         mouse_down_sec = timer - mouse_down_time
         pygame.mixer.stop()
