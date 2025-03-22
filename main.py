@@ -6,16 +6,10 @@ import pygame
 import socket
 import threading
 import json
+import RPi.GPIO as GPIO 
 
-
-has_gpio = False
-try:
-    import RPi.GPIO as GPIO 
-    has_gpio = True
-    GPIO.setmode(GPIO.BOARD) # Use physical pin numbering
-    GPIO.setup(11, GPIO.IN, pull_up_down=GPIO.PUD_DOWN)
-except ModuleNotFoundError:
-    pass
+GPIO.setmode(GPIO.BOARD) # Use physical pin numbering
+GPIO.setup(11, GPIO.IN, pull_up_down=GPIO.PUD_DOWN)
 
 
 title = "Amateur Radio Communications"
@@ -142,7 +136,7 @@ while running:
     font = pygame.font.SysFont(None, 84)
     center = screen.get_rect().center
 
-    if has_gpio and GPIO.input(10) == GPIO.HIGH:
+    if has_gpio andGPIO.input(10) == GPIO.HIGH:
         print("high")
 
 
