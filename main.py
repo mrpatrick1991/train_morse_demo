@@ -12,7 +12,7 @@ import RPi.GPIO as GPIO
 title = "Amateur Radio Communications"
 
 keyer_pin = 11 # pull down initially, connect to 3v3 through the key switch
-
+has_gpio = True
 MULTICAST_GROUP = "224.1.1.1"
 PORT = 5007
 
@@ -138,12 +138,12 @@ while running:
     font = pygame.font.SysFont(None, 84)
     center = screen.get_rect().center
 
-    if GPIO.input(keyer_pin) == GPIO.HIGH:
+    if GPIO.input(keyer_pin) == GPIO.HIGH and has_gpio:
         mouse_down = True
         mouse_down_time = timer
         Note(tone_freq_hz).play(-1,maxtime=int(10*1000))
             
-    if (GPIO.input(keyer_pin) == GPIO.LOW and mouse_down):        
+    if (GPIO.input(keyer_pin) == GPIO.LOW and mouse_down and has_gpio):        
         mouse_down = False
         mouse_down_sec = timer - mouse_down_time
         pygame.mixer.stop()
