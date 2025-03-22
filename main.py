@@ -15,6 +15,7 @@ try:
     GPIO.setmode(GPIO.BOARD) # Use physical pin numbering
     GPIO.setup(11, GPIO.IN, pull_up_down=GPIO.PUD_DOWN)
 except ModuleNotFoundError:
+    print("NO gpio available.")
     pass
 
 
