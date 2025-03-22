@@ -142,7 +142,7 @@ while running:
     font = pygame.font.SysFont(None, 84)
     center = screen.get_rect().center
 
-    if GPIO.input(10) == GPIO.HIGH:
+    if has_gpio and GPIO.input(10) == GPIO.HIGH:
         print("high")
 
 
