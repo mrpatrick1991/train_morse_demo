@@ -11,6 +11,7 @@ import RPi.GPIO as GPIO
 
 title = "Amateur Radio Communications"
 
+keyer_pin = 11 # pull down initially, connect to 3v3 through the key switch
 
 MULTICAST_GROUP = "224.1.1.1"
 PORT = 5007
@@ -72,7 +73,7 @@ pygame.init()
 
 GPIO.setwarnings(False) # Ignore warning for now
 GPIO.setmode(GPIO.BOARD) # Use physical pin numbering
-GPIO.setup(11, GPIO.IN, pull_up_down=GPIO.PUD_DOWN)
+GPIO.setup(keyer_pin, GPIO.IN, pull_up_down=GPIO.PUD_DOWN)
 
 infoObject = pygame.display.Info()
 screen = pygame.display.set_mode((infoObject.current_w, infoObject.current_h))
@@ -137,9 +138,25 @@ while running:
     font = pygame.font.SysFont(None, 84)
     center = screen.get_rect().center
 
-    if GPIO.input(11) == GPIO.HIGH:
-        print("high")
-    
+    if GPIO.input(keyer_pin) == GPIO.HIGH:
+        mouse_down = True
+        mouse_down_time = timer
+        Note(tone_freq_hz).play(-1,maxtime=int(10*1000))
+            
+    if (GPIO.input(keyer_pin) == GPIO.LOW):        
+        mouse_down = False
+        mouse_down_sec = timer - mouse_down_time
+        pygame.mixer.stop()
+        print("mouse clicked for: ", str(mouse_down_sec))
+
+        if (mouse_down_sec <= dit_time_sec*key_fudge_factor and mouse_down_sec > key_min_time_sec):
+            print("DIT ")
+            keyer_dit_dah.append(".")
+
+        elif (mouse_down_sec >= dit_time_sec*key_fudge_factor):
+            print("DAH ")
+            keyer_dit_dah.append("-")
+
 
     for event in pygame.event.get():
 
