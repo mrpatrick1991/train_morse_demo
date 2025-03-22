@@ -8,9 +8,6 @@ import threading
 import json
 import RPi.GPIO as GPIO 
 
-GPIO.setmode(GPIO.BOARD) # Use physical pin numbering
-GPIO.setup(11, GPIO.IN, pull_up_down=GPIO.PUD_DOWN)
-
 
 title = "Amateur Radio Communications"
 
@@ -72,6 +69,9 @@ code = {"A": ".-",     "B": "-...",   "C": "-.-.",
 code_reverse = {v: k for k, v in code.items()}
 
 pygame.init()
+
+GPIO.setmode(GPIO.BOARD) # Use physical pin numbering
+GPIO.setup(11, GPIO.IN, pull_up_down=GPIO.PUD_DOWN)
 
 infoObject = pygame.display.Info()
 screen = pygame.display.set_mode((infoObject.current_w, infoObject.current_h))
