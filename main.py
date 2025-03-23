@@ -6,7 +6,16 @@ import pygame
 import socket
 import threading
 import json
-import RPi.GPIO as GPIO 
+
+has_gpio = False
+try:
+    import RPi.GPIO as GPIO 
+    has_gpio = True
+    GPIO.setmode(GPIO.BOARD) # Use physical pin numbering
+    GPIO.setup(11, GPIO.IN, pull_up_down=GPIO.PUD_DOWN)
+except ModuleNotFoundError:
+    print("NO gpio available.")
+    pass
 
 
 title = "Amateur Radio Communications"
