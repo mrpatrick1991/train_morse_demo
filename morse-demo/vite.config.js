@@ -1,5 +1,5 @@
 import { defineConfig } from 'vite';
 
 export default defineConfig({
-  base: '/train-morse-demo/', 
+  base: '/train_morse_demo/',
 });
