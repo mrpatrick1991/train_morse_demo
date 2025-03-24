@@ -6,8 +6,14 @@ import Peer from 'peerjs';
 const morseTextEl = document.getElementById('morseText');
 const typedTextEl = document.getElementById('typedText');
 
+const lastMorseTextEl = document.getElementById('lastMorseText');
+const lastTypedTextEl = document.getElementById('lastTypedText');
+
 let typedText = '';
 let morseText = '';
+
+let lastMorseText = '';
+let lastTypedText = '';
 
 // Audio synth
 const oscBeep = (freq = 600, duration = 0.1, time = Tone.now()) => {
@@ -36,6 +42,7 @@ document.getElementById('connectBtn').addEventListener('click', () => {
     console.log('Received:', data);
     typedText = data.typedText;
     morseText = data.morseText;
+    playMorseSound(data.morseText.trim().split(' ').pop()); // Only play the most recent Morse chunk
     updateDisplay();
   });
 });
@@ -47,6 +54,7 @@ peer.on('connection', incoming => {
   conn.on('data', data => {
     typedText = data.typedText;
     morseText = data.morseText;
+    playMorseSound(data.morseText.trim().split(' ').pop()); // Only play the most recent Morse chunk
     updateDisplay();
   });
 });
@@ -88,6 +96,10 @@ window.addEventListener('keydown', (event) => {
 function updateDisplay() {
   typedTextEl.textContent = typedText;
   morseTextEl.textContent = morseText;
+  const splitMorseText = morseText.split([' '])
+  console.log(splitMorseText)
+  lastTypedTextEl.textContent = typedText.split(' ').pop();
+  lastMorseTextEl.textContent = splitMorseText[splitMorseText.length - 2];
 }
 
 function broadcastState() {
