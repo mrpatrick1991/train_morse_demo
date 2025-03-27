@@ -98,7 +98,7 @@ function updateDisplay() {
   morseTextEl.textContent = morseText;
   const splitMorseText = morseText.split([' '])
   console.log(splitMorseText)
-  lastTypedTextEl.textContent = typedText.split(' ').pop();
+  lastTypedTextEl.textContent = typedText[typedText.length - 1];
   lastMorseTextEl.textContent = splitMorseText[splitMorseText.length - 2];
 }
 
