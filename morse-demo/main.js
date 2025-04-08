@@ -68,27 +68,36 @@ window.addEventListener('keydown', (event) => {
   }
   const key = event.key.toUpperCase();
 
-  if (/^[A-Z0-9]$/.test(key)) {
+  if (/^[A-Z0-9]$/.test(key) & key != ' ') {
     typedText += key;
     const encoded = morse.encode(key);
     morseText += encoded + ' ';
     playMorseSound(encoded);
-    broadcastState();
-  }
 
-  if (event.key === ' ') {
-    typedText += ' ';
-    morseText += '/ ';
+
+
+    if (typedText.length >= 10) {
+      typedText = typedText.substring(1)
+    }
+  
+    let parts = morseText.trim().split(' ');
+    if (parts.length >= 10) {
+      parts.shift()
+      morseText = parts.join(' ') + (parts.length ? ' ' : '');
+    }
+  
     broadcastState();
   }
 
   if (event.key === 'Backspace') {
-    typedText = typedText.slice(0, -1);
+    typedText = '';
+    morseText = '';
     let parts = morseText.trim().split(' ');
     parts.pop();
     morseText = parts.join(' ') + (parts.length ? ' ' : '');
     broadcastState();
   }
+
 
   updateDisplay();
 });
